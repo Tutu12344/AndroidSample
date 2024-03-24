@@ -45,9 +45,9 @@ class MainActivity : AppCompatActivity() {
         override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
             var item = parent.getItemAtPosition(position) as String
 
-            val show = "あなたが選んだ定食:$item"
+            val dialogFrament = OrderConfirmDialogFrament()
 
-            Toast.makeText(this@MainActivity,show,Toast.LENGTH_LONG).show()
+            dialogFrament.show(supportFragmentManager,"OrderConfirmDialogFrament")
         }
 
     }
