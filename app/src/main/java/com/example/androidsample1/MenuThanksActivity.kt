@@ -2,12 +2,16 @@ package com.example.androidsample1
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 class MenuThanksActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_thanks)
+
+        //戻るボタンの記載
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // リスト画面から渡されたデータを取得。
         val menuName = intent.getStringExtra("menuName")
@@ -25,11 +29,15 @@ class MenuThanksActivity : AppCompatActivity() {
         tvMenuPrice.text = menuPrice
     }
 
-    /**
-     * 戻るボタンをタップした時の処理。
-     * @param view 画面部品。
-     */
-    fun onBackButtonClick(view: View) {
-        finish()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var returnVal = true
+        //戻る選択時の処理
+        if(item.itemId == android.R.id.home){
+            finish()
+        }else{
+            returnVal = super.onOptionsItemSelected(item)
+        }
+
+        return returnVal
     }
 }
