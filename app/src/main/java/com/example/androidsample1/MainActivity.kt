@@ -2,20 +2,28 @@ package com.example.androidsample1
 
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -25,118 +33,61 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.switchmaterial.SwitchMaterial
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
-    //緯度プロパティ。
-    private var _latitude = 0.0
-    //経度プロパティ。
-    private var _longitude = 0.0
-    // FusedLocationProviderClientオブジェクトプロパティ。
-    private lateinit var _fusedLocationClient: FusedLocationProviderClient
-    // LocationRequestオブジェクトプロパティ。
-    private lateinit var _locationRequest: LocationRequest
-    // 位置情報が変更されたときの処理を行うコールバックオブジェクトプロパティ。
-    private lateinit var _onUpdateLocation: OnUpdateLocation
+    private val _cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallbackFromCamera())
+    private var _imageUri:Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // FusedLocationProviderClientオブジェクトを取得。
-        _fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
-        // LocationRequestのビルダーオブジェクトを生成。
-        val builder =  LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
-        // LocationRequestオブジェクトを生成。
-        _locationRequest = builder.build()
-        // 位置情報が変更されたときの処理を行うコールバックオブジェクトを生成。
-        _onUpdateLocation = OnUpdateLocation()
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (ActivityCompat.checkSelfPermission(
-                this@MainActivity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this@MainActivity,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            //許可をACCESS_FINE_LOCATIONとACCESS_COARSE_LOCATIONに設定。
-            val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-            // 許可を求めるダイアログを表示。その際、リクエストコードを1000に設定。
-            ActivityCompat.requestPermissions(this@MainActivity, permissions, 1000)
-            //onResume()メソッドを終了。
-            return
-        }
-        _fusedLocationClient.requestLocationUpdates(_locationRequest,_onUpdateLocation,mainLooper)
+    // 画像部分がタップされたときの処理メソッド。
+    fun onCameraImageClick(view: View) {
+
+        val dataFormat = SimpleDateFormat("yyyyMMddHHmmss")
+        val now = Date()
+        val nowStr = dataFormat.format(now)
+        val fileName = "CameraIntentSample_${nowStr}.jpg"
+
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE,fileName)
+        values.put(MediaStore.Images.Media.MIME_TYPE,"image/jpeg")
+
+        _imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values)
+
+        // Intentオブジェクトを生成。
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,_imageUri)
+        // アクティビティを起動。
+        _cameraLauncher.launch(intent)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1000 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
-            if (ActivityCompat.checkSelfPermission(this@MainActivity,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this@MainActivity,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                return
-            }
-            _fusedLocationClient.requestLocationUpdates(_locationRequest,_onUpdateLocation,mainLooper)
-        }
-    }
 
-    override fun onPause() {
-        super.onPause()
-        _fusedLocationClient.removeLocationUpdates(_onUpdateLocation)
-    }
-    private inner class OnUpdateLocation : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            // 直近の位置情報を取得。
-            val location = locationResult.lastLocation
-            location?.let {
-                // locationオブジェクトから緯度を取得。
-                _latitude = it.latitude
-                // locationオブジェクトから経度を取得。
-                _longitude = it.longitude
-                // 取得した緯度をTextViewに表示。
-                val tvLatitude = findViewById<TextView>(R.id.tvLatitude)
-                tvLatitude.text = _latitude.toString()
-                // 取得した経度をTextViewに表示。
-                val tvLongitude = findViewById<TextView>(R.id.tvLongitude)
-                tvLongitude.text = _longitude.toString()
+    // Cameraアクティビティから戻ってきたときの処理が記述されたコールバッククラス。
+    private inner class ActivityResultCallbackFromCamera : ActivityResultCallback<ActivityResult> {
+        override fun onActivityResult(result: ActivityResult) {
+            // カメラアプリで撮影成功の場合
+            if(result.resultCode == RESULT_OK) {
+                val lvCamera = findViewById<ImageView>(R.id.ivCamera)
+                lvCamera.setImageURI(_imageUri)
+                //カメラ撮影の処理
+//                // 撮影された画像のビットマップデータを取得。
+//                val bitmap = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//                    result.data?.getParcelableExtra("data", Bitmap::class.java)
+//                }
+//                else {
+//                    result.data?.getParcelableExtra<Bitmap>("data")
+//                }
+//                // 画像を表示するImageViewを取得。
+//                val ivCamera = findViewById<ImageView>(R.id.ivCamera)
+//                // 撮影された画像をImageViewに設定。
+//                ivCamera.setImageBitmap(bitmap)
             }
         }
-
-
-
     }
-
-    fun onMapSearchButtonClick(view: View) {
-        //入力欄に入力されたキーワード文字列を取得。
-        val etSearchWord = findViewById<EditText>(R.id.etSearchWord)
-        var searchWord = etSearchWord.text.toString()
-        //入力されたキーワードをURLエンコード。
-        searchWord = URLEncoder.encode(searchWord, "UTF-8")
-        //マップアプリと連携するURI文字列を生成。
-        val uriStr = "geo:0,0?q=${searchWord}"
-        //URI文字列からURIオブジェクトを生成。
-        val uri = Uri.parse(uriStr)
-        //Intentオブジェクトを生成。
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        //アクティビティを起動。
-        startActivity(intent)
-    }
-
-    fun onMapShowCurrentButtonClick(view: View) {
-        //プロパティの緯度と経度の値をもとにマップアプリと連携するURI文字列を生成。
-        val uriStr = "geo:${_latitude},${_longitude}"
-        //URI文字列からURIオブジェクトを生成。
-        val uri = Uri.parse(uriStr)
-        //Intentオブジェクトを生成。
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        //アクティビティを起動。
-        startActivity(intent)
-    }
-
 
 }
