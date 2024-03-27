@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">カメラ連携サンプル</string>
+    <string name="app_name">ツールバーサンプル</string>
+    <string name="tv_article">吾輩は猫である。名前はまだ無い。\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…\nどこで…</string>
+    <string name="toolbar_title">Material!</string>
+    <string name="toolbar_subtitle">ツールバーを使用</string>
+    <string name="fab_desc">メール送信</string>
 </resources>
