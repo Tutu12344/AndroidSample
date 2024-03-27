@@ -7,83 +7,47 @@
     android:layout_height="match_parent">
 
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/glLvCocktail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
-
-    <ListView
-        android:id="@+id/lvCocktail"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:entries="@array/lv_cocktaillist"
-        app:layout_constraintBottom_toTopOf="@+id/glLvCocktail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/tlLvName"
+    <Button
+        android:id="@+id/btBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/tv_lb_name"
+        android:enabled="false"
+        android:onClick="onBackButtonClick"
+        android:text="@string/bt_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/glLvCocktail" />
-
-    <TextView
-        android:id="@+id/tvCocktailName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/tv_name"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/tlLvName"
-        app:layout_constraintTop_toBottomOf="@+id/glLvCocktail" />
-
-    <TextView
-        android:id="@+id/tlLbNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/tv_lb_note"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tlLvName" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnSave"
+        android:id="@+id/btForward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="onForwardButtonClick"
+        android:text="@string/bt_forward"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btPlay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:enabled="false"
-        android:onClick="onSaveButtonClick"
-        android:text="@string/btn_save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:onClick="onPlayButtonClick"
+        android:text="@string/bt_play_play"
+        app:layout_constraintEnd_toStartOf="@+id/btForward"
+        app:layout_constraintStart_toEndOf="@+id/btBack"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/etNote"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/swLoop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/btnSave"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/sw_loop"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tlLbNote" />
+        app:layout_constraintTop_toBottomOf="@+id/btBack" />
 </androidx.constraintlayout.widget.ConstraintLayout>

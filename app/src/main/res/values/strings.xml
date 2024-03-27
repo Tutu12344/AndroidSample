@@ -1,20 +1,8 @@
 <resources>
-    <string name="app_name">データベースサンプル</string>
-    <string-array name="lv_cocktaillist">
-    <item>ホワイトレディー</item>
-    <item>バラライカ</item>
-    <item>XYZ</item>
-    <item>ニューヨーク</item>
-    <item>マンハッタン</item>
-    <item>ミシシッピミュール</item>
-    <item>ブルーハワイ</item>
-    <item>マイタイ</item>
-    <item>マティーニ</item>
-    <item>ブルームーン</item>
-        <item>モヒート</item>
-    </string-array>
-    <string name="tv_lb_name">選択されたカクテル:</string>
-    <string name="tv_name">未選択</string>
-    <string name="tv_lb_note">感想:</string>
-    <string name="btn_save">保存</string>
+    <string name="app_name">メディアサンプル</string>
+    <string name="bt_play_play">再生</string>
+    <string name="bt_play_pause">一時停止</string>
+    <string name="bt_back">&lt;&lt;</string>
+    <string name="bt_forward">&gt;&gt;</string>
+    <string name="sw_loop">リピート再生</string>
 </resources>
